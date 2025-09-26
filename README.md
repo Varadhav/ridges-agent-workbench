@@ -18,26 +18,50 @@ Before using this workbench, ensure you have:
   - `run_agent_test.sh` - Main wrapper script for reproducible agent testing
 - `runs/` - Timestamped test results and logs (ignored by git)
 - `ridges/` - Local copy of the Ridges repository
+- `env.template` - Environment configuration template
 - `README.md` - This documentation
 - `.gitignore` - Git ignore configuration
 
 ## Getting Open Top Agents
 
 ### Step 1: Explore Available Agents
+
 1. Access the Ridges platform or agent marketplace
 2. Browse available open-source top agents via the Explore section
 3. Review agent performance metrics and compatibility
 
 ### Step 2: Download Agent Code
+
 1. Select a top-performing open agent from the available options
 2. Copy the complete agent code (typically 300KB+ for production agents)
 3. Save the code to `ridges/miner/top_agent_tmp.py`
 
 ### Step 3: Verify Agent Structure
+
 Ensure the downloaded agent contains:
+
 - `agent_main(input_dict)` function as the main entry point
 - Proper error handling and return format: `{"patch": "...diff..."}`
 - No unauthorized outbound network calls (only proxy endpoints allowed)
+
+## Environment Configuration
+
+The workbench includes a comprehensive environment template for easy configuration:
+
+```bash
+# Copy the template and customize with your values
+cp env.template .env
+
+# Edit .env with your actual API keys and preferences
+nano .env
+```
+
+The template includes configuration for:
+
+- **Chutes API Key**: Your API key from the Chutes platform
+- **Testing Parameters**: Default values for agent testing
+- **Docker Configuration**: Sandbox image settings
+- **Development Options**: Debug mode, auto-updates, etc.
 
 ## Running Tests
 
@@ -154,18 +178,22 @@ cat runs/20250922_143052/git_commit.txt
 ### Common Issues
 
 **"Agent file not found"**
+
 - Ensure agent file exists at the specified path
 - Check that the path is relative to the ridges directory
 
 **"Docker not running"**
+
 - Start Docker Desktop or Docker service
 - Verify Docker permissions for your user
 
 **"Python command not found"**
+
 - Ensure virtual environment is activated
 - Check that Python 3.11+ is installed and accessible
 
 **Test hangs at proxy startup**
+
 - Check network connectivity to Chutes backend
 - Verify API key is correctly configured in `ridges/proxy/.env`
 - Ensure no firewall blocking required connections
@@ -173,6 +201,7 @@ cat runs/20250922_143052/git_commit.txt
 ### Getting Help
 
 If you encounter issues:
+
 1. Check the complete logs in `runs/[timestamp]/run.log`
 2. Verify all prerequisites are properly installed
 3. Ensure the ridges repository is properly set up
@@ -187,7 +216,6 @@ If you encounter issues:
 **Agent Used**: Production ridges miner agent (agent.py → top_agent_tmp.py)  
 **Source**: Built-in ridges repository agent code (120KB)  
 **Location**: `ridges/miner/top_agent_tmp.py` (created from `ridges/miner/agent.py`)  
-**Function**: `agent_main(input_dict)` returning `{"patch": "..."}`  
+**Function**: `agent_main(input_dict)` returning `{"patch": "..."}`
 
 **Note**: Instead of using the Explore dashboard, we used the existing production-ready agent code found in the ridges repository. This provides a more robust and tested agent implementation.
-
