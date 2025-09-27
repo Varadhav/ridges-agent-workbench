@@ -2,7 +2,7 @@
 # Usage: .\run_agent_test.ps1 [agent_path] [num_problems] [problem_set] [timeout]
 
 param(
-    [string]$AgentPath = "miner\custom_agent.py",
+    [string]$AgentPath = "miner\top_agent_tmp.py",
     [int]$NumProblems = 1,
     [ValidateSet("easy", "medium", "hard")]
     [string]$ProblemSet = "easy",

@@ -15,7 +15,10 @@ Before using this workbench, ensure you have:
 ## Project Structure
 
 * `scripts/` - Automation scripts for testing and evaluation  
-   * `run_agent_test.sh` - Main wrapper script for reproducible agent testing
+   * `run_agent_test.sh` - Linux/Mac wrapper for ridges.py test-agent
+   * `run_ridges_test.bat` - Windows wrapper for ridges.py test-agent
+   * `run_agent_test.ps1` - PowerShell wrapper for local testing
+   * `run_agent_test.bat` - Windows CMD wrapper for local testing
 * `runs/` - Timestamped test results and logs (ignored by git)
 * `ridges/` - Local copy of the Ridges repository
 * `env.template` - Environment configuration template
@@ -67,30 +70,47 @@ The template includes configuration for:
 
 ### Basic Usage
 
+**For ridges.py test-agent (recommended):**
 ```bash
-# Run with default parameters (1 easy problem, 300s timeout)
+# Linux/Mac - Run with ridges.py test-agent
 bash scripts/run_agent_test.sh
+
+# Windows - Run with ridges.py test-agent  
+scripts\run_ridges_test.bat
 
 # Run with custom parameters
 bash scripts/run_agent_test.sh [agent_path] [num_problems] [problem_set] [timeout]
+scripts\run_ridges_test.bat [agent_path] [num_problems] [problem_set] [timeout]
+```
+
+**For local testing (simulation):**
+```bash
+# PowerShell wrapper
+.\scripts\run_agent_test.ps1
+
+# Windows CMD wrapper  
+scripts\run_agent_test.bat
 ```
 
 ### Example Commands
 
 ```bash
-# Test with defaults
+# Test with defaults (ridges.py test-agent)
 bash scripts/run_agent_test.sh
+scripts\run_ridges_test.bat
 
 # Test 2 medium problems with 15-minute timeout
-bash scripts/run_agent_test.sh miner/custom_agent.py 2 medium 900
+bash scripts/run_agent_test.sh miner/top_agent_tmp.py 2 medium 900
+scripts\run_ridges_test.bat miner\top_agent_tmp.py 2 medium 900
 
 # Test 5 easy problems with default timeout
-bash scripts/run_agent_test.sh miner/custom_agent.py 5 easy 300
+bash scripts/run_agent_test.sh miner/top_agent_tmp.py 5 easy 300
+scripts\run_ridges_test.bat miner\top_agent_tmp.py 5 easy 300
 ```
 
 ### Parameters
 
-* **agent_path**: Path to agent file (default: `miner/custom_agent.py`)
+* **agent_path**: Path to agent file (default: `miner/top_agent_tmp.py`)
 * **num_problems**: Number of problems to test (default: `1`)
 * **problem_set**: Difficulty level - `easy`, `medium`, or `hard` (default: `easy`)
 * **timeout**: Timeout per problem in seconds (default: `300`)

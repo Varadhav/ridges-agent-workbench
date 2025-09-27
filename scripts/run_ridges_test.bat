@@ -1,6 +1,9 @@
 @echo off
-REM Ridges Agent Test Runner for Windows
-REM Usage: run_agent_test.bat [agent_path] [num_problems] [problem_set] [timeout]
+REM Ridges Agent Test Wrapper for Windows
+REM Usage: run_ridges_test.bat [agent_path] [num_problems] [problem_set] [timeout]
+REM 
+REM This script provides a consistent interface for testing agents with the ridges.py test-agent command
+REM and creates timestamped runs with comprehensive logging for reproducibility.
 
 setlocal enabledelayedexpansion
 
@@ -27,6 +30,10 @@ REM Validate problem set
 if not "%PROBLEM_SET%"=="easy" if not "%PROBLEM_SET%"=="medium" if not "%PROBLEM_SET%"=="hard" (
     echo Error: Problem set must be 'easy', 'medium', or 'hard'
     echo Usage: %0 [agent_path] [num_problems] [problem_set] [timeout]
+    echo   agent_path: Path to agent file (default: %DEFAULT_AGENT_PATH%)
+    echo   num_problems: Number of problems to test (default: %DEFAULT_NUM_PROBLEMS%)
+    echo   problem_set: Difficulty level (default: %DEFAULT_PROBLEM_SET%)
+    echo   timeout: Timeout per problem in seconds (default: %DEFAULT_TIMEOUT%)
     exit /b 1
 )
 
@@ -39,7 +46,7 @@ REM Create run directory
 if not exist "%RUN_DIR%" mkdir "%RUN_DIR%"
 
 echo ==========================================
-echo Ridges Agent Test Runner
+echo Ridges Agent Test Wrapper
 echo ==========================================
 echo Timestamp: %TIMESTAMP%
 echo Agent Path: %AGENT_PATH%
@@ -56,18 +63,28 @@ echo Number of Problems: %NUM_PROBLEMS% >> "%RUN_DIR%\meta.txt"
 echo Problem Set: %PROBLEM_SET% >> "%RUN_DIR%\meta.txt"
 echo Timeout: %TIMEOUT%s >> "%RUN_DIR%\meta.txt"
 echo Start Time: %date% %time% >> "%RUN_DIR%\meta.txt"
+echo Script Version: 1.0 >> "%RUN_DIR%\meta.txt"
 
-REM Save git commit info for reproducibility
-echo Saving git commit information...
-git rev-parse HEAD > "%RUN_DIR%\git_commit.txt" 2>nul || echo Not a git repository > "%RUN_DIR%\git_commit.txt"
-git branch --show-current >> "%RUN_DIR%\git_commit.txt" 2>nul || echo Not a git repository >> "%RUN_DIR%\git_commit.txt"
-echo Git Status: >> "%RUN_DIR%\git_commit.txt"
-git status --porcelain >> "%RUN_DIR%\git_commit.txt" 2>nul || echo Not a git repository >> "%RUN_DIR%\git_commit.txt"
+REM Save git commit info for reproducibility (from ridges directory)
+echo Saving git commit information from ridges directory...
+cd ridges
+git rev-parse HEAD > "..\%RUN_DIR%\git_commit.txt" 2>nul || echo Not a git repository > "..\%RUN_DIR%\git_commit.txt"
+git branch --show-current >> "..\%RUN_DIR%\git_commit.txt" 2>nul || echo Not a git repository >> "..\%RUN_DIR%\git_commit.txt"
+echo Git Status: >> "..\%RUN_DIR%\git_commit.txt"
+git status --porcelain >> "..\%RUN_DIR%\git_commit.txt" 2>nul || echo Not a git repository >> "..\%RUN_DIR%\git_commit.txt"
+cd ..
 
 REM Check if agent file exists
 if not exist "ridges\%AGENT_PATH%" (
     echo Error: Agent file not found at ridges\%AGENT_PATH%
-    echo Please ensure your custom agent code is placed at the correct path.
+    echo Please ensure your agent file exists at the specified path.
+    exit /b 1
+)
+
+REM Check if ridges.py exists
+if not exist "ridges\ridges.py" (
+    echo Error: ridges.py not found in ridges\
+    echo Please ensure the ridges repository is properly set up.
     exit /b 1
 )
 
@@ -85,47 +102,45 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM Check if .env file exists
-if not exist ".env" (
-    echo Warning: .env file not found. Using default configuration.
-    echo Consider copying env.template to .env and configuring your settings.
+REM Check if .env file exists in ridges directory
+if not exist "ridges\.env" (
+    echo Warning: .env file not found in ridges\
+    echo Consider setting up environment configuration for Chutes API.
 )
 
-REM Run the actual test
-echo Starting agent test...
+REM Run the actual test with ridges.py test-agent
+echo Starting ridges.py test-agent...
 echo This may take several minutes depending on the problem set and timeout.
 
 REM Log everything to the run directory
 (
 echo ==========================================
-echo Test Execution Log
+echo Ridges Test Execution Log
 echo ==========================================
 echo Start Time: %date% %time%
 echo.
-echo Running test with parameters:
+echo Running ridges.py test-agent with parameters:
 echo   Agent: %AGENT_PATH%
 echo   Problems: %NUM_PROBLEMS%
 echo   Set: %PROBLEM_SET%
 echo   Timeout: %TIMEOUT%s
 echo.
-echo Simulating test execution...
-echo Note: Replace this section with your actual test command
-echo.
-echo Example test command would be:
-echo python -m pytest test_agent.py --agent=%AGENT_PATH% --problems=%NUM_PROBLEMS% --set=%PROBLEM_SET% --timeout=%TIMEOUT%
+echo Executing: ridges\ridges.py test-agent --agent-file %AGENT_PATH% --num-problems %NUM_PROBLEMS% --problem-set %PROBLEM_SET% --timeout %TIMEOUT% --verbose
 echo.
 
-REM Simulate test progress
-for /l %%i in (1,1,%NUM_PROBLEMS%) do (
-    echo Processing problem %%i/%NUM_PROBLEMS%...
-    timeout /t 2 /nobreak >nul
-    echo Problem %%i completed successfully
-)
+REM Change to ridges directory for the test
+cd ridges
+
+REM Run the actual ridges.py test-agent command
+ridges.py test-agent --agent-file "%AGENT_PATH%" --num-problems %NUM_PROBLEMS% --problem-set %PROBLEM_SET% --timeout %TIMEOUT% --verbose
 
 echo.
 echo Test completed successfully!
 echo End Time: %date% %time%
-) > "%RUN_DIR%\run.log" 2>&1
+) > "..\%RUN_DIR%\run.log" 2>&1
+
+REM Return to original directory
+cd ..
 
 echo.
 echo ==========================================
@@ -140,6 +155,8 @@ echo To view results:
 echo   type "%RUN_DIR%\run.log"
 echo   type "%RUN_DIR%\meta.txt"
 echo.
+echo To run another test:
+echo   scripts\run_ridges_test.bat [agent_path] [num_problems] [problem_set] [timeout]
+echo.
 
 pause
-

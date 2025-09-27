@@ -1,12 +1,15 @@
 #!/bin/bash
 
-# Ridges Agent Test Runner
+# Ridges Agent Test Wrapper Script
 # Usage: ./run_agent_test.sh [agent_path] [num_problems] [problem_set] [timeout]
+# 
+# This script provides a consistent interface for testing agents with the ridges.py test-agent command
+# and creates timestamped runs with comprehensive logging for reproducibility.
 
 set -e  # Exit on any error
 
 # Default parameters
-DEFAULT_AGENT_PATH="miner/custom_agent.py"
+DEFAULT_AGENT_PATH="../ridges/miner/top_agent_tmp.py"
 DEFAULT_NUM_PROBLEMS=1
 DEFAULT_PROBLEM_SET="easy"
 DEFAULT_TIMEOUT=300
@@ -21,6 +24,10 @@ TIMEOUT=${4:-$DEFAULT_TIMEOUT}
 if [[ ! "$PROBLEM_SET" =~ ^(easy|medium|hard)$ ]]; then
     echo "Error: Problem set must be 'easy', 'medium', or 'hard'"
     echo "Usage: $0 [agent_path] [num_problems] [problem_set] [timeout]"
+    echo "  agent_path: Path to agent file (default: $DEFAULT_AGENT_PATH)"
+    echo "  num_problems: Number of problems to test (default: $DEFAULT_NUM_PROBLEMS)"
+    echo "  problem_set: Difficulty level (default: $DEFAULT_PROBLEM_SET)"
+    echo "  timeout: Timeout per problem in seconds (default: $DEFAULT_TIMEOUT)"
     exit 1
 fi
 
@@ -32,7 +39,7 @@ RUN_DIR="runs/$TIMESTAMP"
 mkdir -p "$RUN_DIR"
 
 echo "=========================================="
-echo "Ridges Agent Test Runner"
+echo "Ridges Agent Test Wrapper"
 echo "=========================================="
 echo "Timestamp: $TIMESTAMP"
 echo "Agent Path: $AGENT_PATH"
@@ -50,23 +57,31 @@ Number of Problems: $NUM_PROBLEMS
 Problem Set: $PROBLEM_SET
 Timeout: ${TIMEOUT}s
 Start Time: $(date)
+Script Version: 1.0
 EOF
 
-# Save git commit info for reproducibility
-echo "Saving git commit information..."
+# Save git commit info for reproducibility (from ridges directory)
+echo "Saving git commit information from ridges directory..."
 {
-    echo "Git Commit: $(git rev-parse HEAD 2>/dev/null || echo 'Not a git repository')"
-    echo "Git Branch: $(git branch --show-current 2>/dev/null || echo 'Not a git repository')"
+    echo "Git Commit: $(cd ../ridges && git rev-parse HEAD 2>/dev/null || echo 'Not a git repository')"
+    echo "Git Branch: $(cd ../ridges && git branch --show-current 2>/dev/null || echo 'Not a git repository')"
     echo "Git Status:"
-    git status --porcelain 2>/dev/null || echo "Not a git repository"
+    cd ../ridges && git status --porcelain 2>/dev/null || echo "Not a git repository"
     echo "Git Log (last 5 commits):"
-    git log --oneline -5 2>/dev/null || echo "Not a git repository"
+    cd ../ridges && git log --oneline -5 2>/dev/null || echo "Not a git repository"
 } > "$RUN_DIR/git_commit.txt"
 
 # Check if agent file exists
-if [ ! -f "ridges/$AGENT_PATH" ]; then
-    echo "Error: Agent file not found at ridges/$AGENT_PATH"
-    echo "Please ensure your custom agent code is placed at the correct path."
+if [ ! -f "$AGENT_PATH" ]; then
+    echo "Error: Agent file not found at $AGENT_PATH"
+    echo "Please ensure your agent file exists at the specified path."
+    exit 1
+fi
+
+# Check if ridges.py exists
+if [ ! -f "../ridges/ridges.py" ]; then
+    echo "Error: ridges.py not found in ../ridges/"
+    echo "Please ensure the ridges repository is properly set up."
     exit 1
 fi
 
@@ -82,56 +97,43 @@ if ! command -v python3 &> /dev/null; then
     exit 1
 fi
 
-# Check if .env file exists
-if [ ! -f ".env" ]; then
-    echo "Warning: .env file not found. Using default configuration."
-    echo "Consider copying env.template to .env and configuring your settings."
+# Check if .env file exists in ridges directory
+if [ ! -f "../ridges/.env" ]; then
+    echo "Warning: .env file not found in ../ridges/"
+    echo "Consider setting up environment configuration for Chutes API."
 fi
 
-# Load environment variables if .env exists
-if [ -f ".env" ]; then
-    echo "Loading environment variables from .env..."
-    export $(grep -v '^#' .env | xargs)
-fi
-
-# Run the actual test
-echo "Starting agent test..."
+# Run the actual test with ridges.py test-agent
+echo "Starting ridges.py test-agent..."
 echo "This may take several minutes depending on the problem set and timeout."
 
 # Log everything to the run directory
 {
     echo "=========================================="
-    echo "Test Execution Log"
+    echo "Ridges Test Execution Log"
     echo "=========================================="
     echo "Start Time: $(date)"
     echo ""
-    
-    # Change to ridges directory for the test
-    cd ridges
-    
-    # Run the test with the specified parameters
-    echo "Running test with parameters:"
+    echo "Running ridges.py test-agent with parameters:"
     echo "  Agent: $AGENT_PATH"
     echo "  Problems: $NUM_PROBLEMS"
     echo "  Set: $PROBLEM_SET"
     echo "  Timeout: ${TIMEOUT}s"
     echo ""
     
-    # This is where you would run your actual test command
-    # For now, we'll simulate the test process
-    echo "Simulating test execution..."
-    echo "Note: Replace this section with your actual test command"
-    echo ""
-    echo "Example test command would be:"
-    echo "python3 -m pytest test_agent.py --agent=$AGENT_PATH --problems=$NUM_PROBLEMS --set=$PROBLEM_SET --timeout=$TIMEOUT"
+    # Change to ridges directory for the test
+    cd ../ridges
+    
+    # Run the actual ridges.py test-agent command
+    echo "Executing: ./ridges.py test-agent --agent-file $AGENT_PATH --num-problems $NUM_PROBLEMS --problem-set $PROBLEM_SET --timeout $TIMEOUT --verbose"
     echo ""
     
-    # Simulate test progress
-    for i in $(seq 1 $NUM_PROBLEMS); do
-        echo "Processing problem $i/$NUM_PROBLEMS..."
-        sleep 2  # Simulate processing time
-        echo "Problem $i completed successfully"
-    done
+    ./ridges.py test-agent \
+        --agent-file "$AGENT_PATH" \
+        --num-problems "$NUM_PROBLEMS" \
+        --problem-set "$PROBLEM_SET" \
+        --timeout "$TIMEOUT" \
+        --verbose
     
     echo ""
     echo "Test completed successfully!"
@@ -155,4 +157,6 @@ echo "To view results:"
 echo "  cat $RUN_DIR/run.log"
 echo "  cat $RUN_DIR/meta.txt"
 echo ""
-
+echo "To run another test:"
+echo "  ./scripts/run_agent_test.sh [agent_path] [num_problems] [problem_set] [timeout]"
+echo ""
