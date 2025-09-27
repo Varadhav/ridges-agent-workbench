@@ -322,8 +322,55 @@ If you encounter issues:
 
 1. Check the complete logs in `runs/[timestamp]/run.log`
 2. Verify all prerequisites are properly installed
-3. Ensure the ridges repository is properly set up
+3. Ensure the ridges repository is properly set up (see Ridges Repository Setup below)
 4. Confirm your Chutes API key is valid and correctly configured
+
+## Ridges Repository Setup
+
+### Current Status
+**⚠️ Partial Setup**: Currently only have `ridges/miner/` directory with top miner code
+**❌ Missing Components**: Need full ridges repository with `ridges.py`, `proxy/`, and other components
+
+### Required Setup Steps
+
+1. **Clone Full Ridges Repository**:
+   ```bash
+   # Remove current partial ridges directory
+   rm -rf ridges/
+   
+   # Clone the complete ridges repository
+   git clone https://github.com/ridgesai/ridges.git ridges/
+   ```
+
+2. **Set Up Proxy Configuration**:
+   ```bash
+   # Navigate to ridges directory
+   cd ridges/
+   
+   # Set up proxy configuration
+   cp proxy/.env.template proxy/.env
+   # Edit proxy/.env with your Chutes API key
+   ```
+
+3. **Verify Complete Setup**:
+   ```bash
+   # Check for required files
+   ls -la ridges/ridges.py
+   ls -la ridges/proxy/.env
+   ls -la ridges/miner/
+   ```
+
+### Expected Directory Structure
+```
+ridges/
+├── ridges.py              # Main ridges script
+├── proxy/                 # Proxy configuration
+│   └── .env              # Chutes API configuration
+├── miner/                # Agent code
+│   ├── custom_agent.py   # Your top miner (3,922 lines)
+│   └── top_agent_tmp.py  # Copy for testing
+└── ...                   # Other ridges components
+```
 
 ## Version History
 
@@ -333,7 +380,7 @@ If you encounter issues:
 
 **Agent Used**: Advanced Top Miner Agent  
 **Source**: Production-ready 3,922-line implementation  
-**Location**: `ridges/miner/custom_agent.py`  
+**Location**: `ridges/miner/custom_agent.py` (also available as `ridges/miner/top_agent_tmp.py`)  
 **Function**: `agent_main(input_dict)` returning `{"patch": "..."}`  
 **Features**: Multi-language support, advanced tooling, intelligent problem-solving
 
