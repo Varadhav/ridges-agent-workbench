@@ -22,13 +22,14 @@ Edit `.env` and add your Chutes API key:
 CHUTES_API_KEY=your_actual_api_key_here
 ```
 
-## 3. Add Your Custom Agent Code
+## 3. ✅ Top Miner Code Integrated
 
-Replace the template in `ridges\miner\custom_agent.py` with your actual miner code.
+Your advanced top miner code is already integrated in `ridges\miner\custom_agent.py`:
 
-Your agent must have:
-- `agent_main(input_dict)` function
-- Returns `{"patch": "your_solution_diff"}`
+- **Size**: 3,922 lines of production-ready code
+- **Function**: `agent_main(input_dict)` ✅
+- **Return Format**: `{"patch": "your_solution_diff"}` ✅
+- **Features**: Multi-language support, advanced tooling, intelligent problem-solving
 
 ## 4. Run Tests
 

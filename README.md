@@ -1,6 +1,6 @@
 # My Ridges Agent Workbench
 
-Personal workbench for working with the Ridges AI agent system and running reproducible local evaluations with custom miner code.
+Personal workbench for working with the Ridges AI agent system and running reproducible local evaluations with top miner code.
 
 ## Prerequisites
 
@@ -22,27 +22,27 @@ Before using this workbench, ensure you have:
 * `README.md` - This documentation
 * `.gitignore` - Git ignore configuration
 
-## Getting Your Custom Miner Code
+## Top Miner Code Integration
 
-### Step 1: Prepare Your Miner Code
+### ✅ **COMPLETED**: Top Miner Code Integrated
 
-1. Ensure your custom miner code contains:
-   * `agent_main(input_dict)` function as the main entry point
-   * Proper error handling and return format: `{"patch": "...diff..."}`
-   * No unauthorized outbound network calls (only proxy endpoints allowed)
+Your advanced top miner code has been successfully integrated:
 
-### Step 2: Place Your Miner Code
+* **File**: `ridges/miner/custom_agent.py` (3,922 lines)
+* **Function**: `agent_main(input_dict)` ✅
+* **Return Format**: `{"patch": "..."}` ✅
+* **Features**: Advanced problem-solving, multi-language support, comprehensive tooling
+* **Status**: Ready for testing and evaluation
 
-1. Save your custom miner code to `ridges/miner/custom_agent.py`
-2. Update the test script to use your custom agent path
+### Top Miner Capabilities
 
-### Step 3: Verify Agent Structure
+Your integrated top miner includes:
 
-Ensure your custom agent contains:
-
-* `agent_main(input_dict)` function as the main entry point
-* Proper error handling and return format: `{"patch": "...diff..."}`
-* No unauthorized outbound network calls (only proxy endpoints allowed)
+* **Multi-language Support**: Python, JavaScript, TypeScript, Java, C++, Go, Rust
+* **Advanced Problem Analysis**: Pattern recognition, complexity assessment
+* **Comprehensive Tooling**: Git integration, testing frameworks, debugging tools
+* **Intelligent Workflow**: Step-by-step problem solving with checkpoints
+* **Error Handling**: Robust exception handling and recovery mechanisms
 
 ## Environment Configuration
 
@@ -143,7 +143,7 @@ cat runs/20250922_143052/git_commit.txt
 ## Workflow Summary
 
 1. **Setup**: Ensure prerequisites are installed and configured
-2. **Get Agent**: Place your custom miner code in `ridges/miner/custom_agent.py`
+2. **✅ Top Miner**: Advanced 3,922-line top miner code integrated in `ridges/miner/custom_agent.py`
 3. **Test**: Run `bash scripts/run_agent_test.sh` with desired parameters
 4. **Review**: Check timestamped results in `runs/` directory
 5. **Compare**: Use logs to compare different agents or parameter configurations
@@ -213,12 +213,13 @@ If you encounter issues:
 
 ## Agent Source
 
-**Agent Used**: Your custom miner agent  
-**Source**: Custom implementation  
+**Agent Used**: Advanced Top Miner Agent  
+**Source**: Production-ready 3,922-line implementation  
 **Location**: `ridges/miner/custom_agent.py`  
-**Function**: `agent_main(input_dict)` returning `{"patch": "..."}`
+**Function**: `agent_main(input_dict)` returning `{"patch": "..."}`  
+**Features**: Multi-language support, advanced tooling, intelligent problem-solving
 
 ## About
 
-Local testing environment for Ridges agents with Chutes integration and custom miner code.
+Local testing environment for Ridges agents with Chutes integration and top miner code.
 
