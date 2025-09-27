@@ -12,6 +12,28 @@ Before using this workbench, ensure you have:
 * **Docker** installed and running (required for local testing)
 * **Git** for version control
 
+### Getting Your Chutes API Key
+
+1. Sign up for a Chutes account at [chutes.com](https://chutes.com)
+2. Navigate to your API settings
+3. Generate a new API key
+4. Copy the key for configuration
+
+### Setting Up Environment
+
+```bash
+# Copy the environment template
+cp env.template .env
+
+# Edit .env with your actual API key
+nano .env
+```
+
+Add your Chutes API key to the `.env` file:
+```
+CHUTES_API_KEY=your_actual_api_key_here
+```
+
 ## Project Structure
 
 * `scripts/` - Automation scripts for testing and evaluation  
@@ -25,9 +47,44 @@ Before using this workbench, ensure you have:
 * `README.md` - This documentation
 * `.gitignore` - Git ignore configuration
 
-## Top Miner Code Integration
+## Getting Open Top Agents
 
-### ✅ **COMPLETED**: Top Miner Code Integrated
+### Step 1: Explore Available Agents
+
+1. Access the Ridges platform or agent marketplace
+2. Browse available open-source top agents via the Explore section
+3. Review agent performance metrics and compatibility
+4. Select a top-performing agent that meets your requirements
+
+### Step 2: Download Agent Code
+
+1. Select a top-performing open agent from the available options
+2. Copy the complete agent code (typically 300KB+ for production agents)
+3. Save the code to `ridges/miner/top_agent_tmp.py`
+
+### Step 3: Verify Agent Structure
+
+Ensure the downloaded agent contains:
+
+* `agent_main(input_dict)` function as the main entry point
+* Proper error handling and return format: `{"patch": "...diff..."}`
+* No unauthorized outbound network calls (only proxy endpoints allowed)
+
+### Step 4: Test Your Agent
+
+Once you have your open top agent code in place:
+
+```bash
+# Test with default parameters
+bash scripts/run_agent_test.sh
+
+# Test with custom parameters
+bash scripts/run_agent_test.sh ridges/miner/top_agent_tmp.py 3 medium 600
+```
+
+## Current Top Miner Integration
+
+### ✅ **COMPLETED**: Advanced Top Miner Code Integrated
 
 Your advanced top miner code has been successfully integrated:
 
@@ -160,10 +217,49 @@ cat runs/20250922_143052/meta.txt
 cat runs/20250922_143052/git_commit.txt
 ```
 
+### Understanding Test Results
+
+**meta.txt** contains:
+- Run timestamp and parameters
+- Agent path and problem set details
+- Timeout and start time information
+
+**git_commit.txt** contains:
+- Git commit hash for reproducibility
+- Branch and status information
+- Recent commit history
+
+**run.log** contains:
+- Complete test execution log
+- Problem processing details
+- Performance metrics and timing
+- Error messages and debugging info
+- Final results and summary
+
+## Quick Start Guide
+
+### For New Users (Getting Open Top Agents)
+
+1. **Setup Prerequisites**: Install Python 3.11+, Docker, and Git
+2. **Get Chutes API Key**: Sign up at chutes.com and generate an API key
+3. **Configure Environment**: Copy `env.template` to `.env` and add your API key
+4. **Find Open Agent**: Browse the Explore section for top-performing agents
+5. **Download Agent**: Copy agent code to `ridges/miner/top_agent_tmp.py`
+6. **Run Tests**: Execute `bash scripts/run_agent_test.sh` to benchmark
+7. **Review Results**: Check `runs/<timestamp>/` for detailed logs
+
+### For Existing Users (Current Top Miner)
+
+1. **✅ Top Miner**: Advanced 3,922-line top miner code already integrated
+2. **Test**: Run `bash scripts/run_agent_test.sh` with desired parameters
+3. **Review**: Check timestamped results in `runs/` directory
+4. **Compare**: Use logs to compare different agents or parameter configurations
+5. **Reproduce**: Git commit tracking ensures tests can be reproduced exactly
+
 ## Workflow Summary
 
 1. **Setup**: Ensure prerequisites are installed and configured
-2. **✅ Top Miner**: Advanced 3,922-line top miner code integrated in `ridges/miner/custom_agent.py`
+2. **Get Agent**: Download open top agent from Explore section OR use existing top miner
 3. **Test**: Run `bash scripts/run_agent_test.sh` with desired parameters
 4. **Review**: Check timestamped results in `runs/` directory
 5. **Compare**: Use logs to compare different agents or parameter configurations
@@ -175,7 +271,7 @@ cat runs/20250922_143052/git_commit.txt
 
 **This workbench is designed for processing and benchmarking agents only, not for agent improvement or development.**
 
-* Use this system to evaluate and compare different custom agents
+* Use this system to evaluate and compare different open top agents
 * Measure performance across different problem sets and configurations
 * Generate reproducible benchmark results for analysis
 * Track agent performance over time with consistent testing
@@ -185,6 +281,8 @@ cat runs/20250922_143052/git_commit.txt
 * Do not use this workbench for modifying or improving agent code
 * Agent development should be done in dedicated development environments
 * This system focuses on evaluation and comparison of existing agents
+* Use the Explore section to find and download top-performing agents
+* Focus on benchmarking and performance analysis, not code modification
 
 ### Data and Privacy
 
