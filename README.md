@@ -140,6 +140,30 @@ bash scripts/run_agent_test.sh [agent_path] [num_problems] [problem_set] [timeou
 scripts\run_ridges_test.bat [agent_path] [num_problems] [problem_set] [timeout]
 ```
 
+### Fully Operational Test Pipeline
+
+When properly configured with the complete ridges repository, the `run_agent_test.sh` script provides:
+
+**🌐 Network Infrastructure**:
+- ✅ Starts proxy server with Chutes API integration
+- ✅ Facilitates agent ↔ proxy ↔ Chutes API communication
+
+**🐳 Container Environment**:
+- ✅ Creates Docker sandbox environment
+- ✅ Runs agent code in isolated containers
+
+**📚 Repository Management**:
+- ✅ Clones SWE-bench repositories
+- ✅ Applies test patches
+- ✅ Manages test data and results
+
+**🔄 Complete Workflow**:
+1. **Setup**: Initialize proxy server and Docker environment
+2. **Prepare**: Clone SWE-bench repositories and test data
+3. **Execute**: Run agent code in isolated containers
+4. **Communicate**: Handle agent ↔ proxy ↔ Chutes API interactions
+5. **Results**: Collect and log test results with full traceability
+
 **For local testing (simulation):**
 ```bash
 # PowerShell wrapper

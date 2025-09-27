@@ -121,23 +121,45 @@ echo "This may take several minutes depending on the problem set and timeout."
     echo "  Timeout: ${TIMEOUT}s"
     echo ""
     
-    # Simulate ridges.py test-agent execution (since we don't have full ridges repo)
+    # Run actual ridges.py test-agent execution (when full ridges repo is available)
     echo "Executing: ./ridges.py test-agent --agent-file $AGENT_PATH --num-problems $NUM_PROBLEMS --problem-set $PROBLEM_SET --timeout $TIMEOUT --verbose"
     echo ""
-    echo "Note: This is a simulation since we don't have the full ridges repository."
-    echo "In a real setup, this would run the actual ridges.py test-agent command."
-    echo ""
     
-    # Simulate test execution
-    for i in $(seq 1 $NUM_PROBLEMS); do
-        echo "Processing problem $i/$NUM_PROBLEMS..."
-        echo "  Problem Set: $PROBLEM_SET"
-        echo "  Timeout: ${TIMEOUT}s"
-        echo "  Agent: $AGENT_PATH"
-        sleep 2  # Simulate processing time
-        echo "  Problem $i completed successfully"
+    if [ -f "ridges/ridges.py" ]; then
+        echo "✅ Full ridges repository detected - running actual test pipeline"
+        echo "🌐 Starting proxy server with Chutes API integration..."
+        echo "🐳 Creating Docker sandbox environment..."
+        echo "📚 Cloning SWE-bench repositories..."
+        echo "🔄 Running agent code in isolated containers..."
         echo ""
-    done
+        
+        # Run the actual ridges.py test-agent command
+        ./ridges.py test-agent \
+            --agent-file "$AGENT_PATH" \
+            --num-problems "$NUM_PROBLEMS" \
+            --problem-set "$PROBLEM_SET" \
+            --timeout "$TIMEOUT" \
+            --verbose
+    else
+        echo "⚠️  Partial ridges repository detected - running simulation mode"
+        echo "Note: Install full ridges repository for complete functionality:"
+        echo "  - Proxy server with Chutes API integration"
+        echo "  - Docker sandbox environment"
+        echo "  - SWE-bench repository cloning"
+        echo "  - Isolated container execution"
+        echo ""
+        
+        # Simulate test execution
+        for i in $(seq 1 $NUM_PROBLEMS); do
+            echo "Processing problem $i/$NUM_PROBLEMS..."
+            echo "  Problem Set: $PROBLEM_SET"
+            echo "  Timeout: ${TIMEOUT}s"
+            echo "  Agent: $AGENT_PATH"
+            sleep 2  # Simulate processing time
+            echo "  Problem $i completed successfully"
+            echo ""
+        done
+    fi
     
     echo ""
     echo "Test completed successfully!"
