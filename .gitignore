@@ -62,3 +62,11 @@ Thumbs.db
 *.tmp
 *.temp
 
+# Ridges repository (should be cloned separately)
+ridges/
+/ridges/
+
+# Test results and logs (already covered above, but explicit)
+runs/
+/runs/
+
