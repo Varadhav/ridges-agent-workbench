@@ -405,7 +405,7 @@ ridges/
 **Agent Used**: Advanced Top Miner Agent  
 **Source**: Production-ready 3,922-line implementation  
 **Location**: `ridges/miner/custom_agent.py` (also available as `ridges/miner/top_agent_tmp.py`)  
-**Function**: `agent_main(input_dict)` returning `{"patch": "..."}`  
+**Function**: `agent_main(input_dict)` returning `{"patch": "..."}`
 **Features**: Multi-language support, advanced tooling, intelligent problem-solving
 
 ## About

@@ -2887,7 +2887,7 @@ class FixTaskEnhancedToolManager(EnhancedToolManager):
             
             return json.dumps(combined_results, indent=2)
             
-        except Exception as e:
+    except Exception as e:
             raise ToolManager.Error(
                 ToolManager.Error.ErrorType.RUNTIME_ERROR,
                 f"Parallel analysis failed: {e}"
