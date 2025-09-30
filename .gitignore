@@ -63,6 +63,8 @@ Thumbs.db
 *.temp
 
 # Ridges repository (should be cloned separately)
+# Allow specific miner files to be tracked
+!ridges/miner/
 ridges/
 /ridges/
 
